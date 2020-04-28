@@ -2,7 +2,6 @@ import time
 import speech_recognition as sr
 import pyttsx3
 import os
-from fuzzywuzzy import fuzz
 import webbrowser
 def speak(what):
     print( what )
@@ -14,7 +13,7 @@ opts = {
     "alias": ('вася','васечка','васюня','василий','василиса'),
     "tbr": ('скажи','расскажи','покажи','сколько','произнеси'),
     "calc": ('сколько будет','посчитай'),
-    "load": ('открой','запусти','включи'),
+    "open": ('открой','запусти','включи'),
     "google": ('найди в гугле','найди в гугле что такое', 'поищи в гугле слово', 'забей в гугле что такое', 'забей в гугле','что такое'),
     "cmds": {
         "ctime": ('текущее время','сейчас времени','который час'),
@@ -32,8 +31,8 @@ def callback(recognizer, audio):
 
             for x in opts['alias']:
                 cmd = cmd.replace(x, "").strip()
-            if cmd.startswith(opts["load"]):
-                for x in opts['load']:
+            if cmd.startswith(opts["open"]):
+                for x in opts['open']:
                     cmd = cmd.replace(x, "").strip()
                 if cmd == 'калькулятор':
                     os.startfile("C:\\Users\\gusev\\OneDrive\\Рабочий стол\\Калькулятор")
@@ -43,10 +42,24 @@ def callback(recognizer, audio):
                     webbrowser.open('https://www.youtube.com')
                 if cmd == 'этот проект на гитхабе':
                     webbrowser.open('https://github.com/gusev-iliya/Vasya_voice-assistant')
+                new1 = open("commands.txt", "r")
+                for line in new1:
+                    cm, link = line.split(' ')
+                    if cmd==cm:
+                        webbrowser.open(link)
+                new1.close()
             if cmd.startswith(opts["google"]):
                 for x in opts['google']:
                     cmd = cmd.replace(x, "").strip()
                 webbrowser.open('https://www.google.com/search?q=%s' %cmd)
+            if cmd=='новый сайт':
+                print('команда')
+                cm=input()
+                print('ссылка')
+                link=input()
+                new = open("commands.txt", "a")
+                new.write('%s %s/n' %(cm, link))
+                new.close()
             if cmd.startswith(opts["calc"]):
                 for x in opts['calc']:
                     cmd = cmd.replace(x, "").strip()
