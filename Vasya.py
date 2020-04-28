@@ -3,18 +3,19 @@ import speech_recognition as sr
 import pyttsx3
 import os
 from fuzzywuzzy import fuzz
+import webbrowser
 def speak(what):
     print( what )
-    print(os.system("say"+what))
-    # speak_engine.say( what )
-    # speak_engine.runAndWait()
-    # speak_engine.stop()
+    speak_engine.say( what )
+    speak_engine.runAndWait()
+    speak_engine.stop()
 
 opts = {
     "alias": ('вася','васечка','васюня','василий','василиса'),
     "tbr": ('скажи','расскажи','покажи','сколько','произнеси'),
     "calc": ('сколько будет','посчитай'),
     "load": ('открой','запусти','включи'),
+    "google": ('найди в гугле','найди в гугле что такое', 'поищи в гугле слово', 'забей в гугле что такое', 'забей в гугле','что такое'),
     "cmds": {
         "ctime": ('текущее время','сейчас времени','который час'),
         "radio": ('включи музыку','воспроизведи радио','включи радио'),
@@ -36,6 +37,16 @@ def callback(recognizer, audio):
                     cmd = cmd.replace(x, "").strip()
                 if cmd == 'калькулятор':
                     os.startfile("C:\\Users\\gusev\\OneDrive\\Рабочий стол\\Калькулятор")
+                if cmd == 'вконтакте' or cmd == 'вк':
+                    webbrowser.open('https://vk.com/feed')
+                if cmd == 'ютуб' or cmd == 'ютубчик' or cmd == 'youtube':
+                    webbrowser.open('https://www.youtube.com')
+                if cmd == 'этот проект на гитхабе':
+                    webbrowser.open('https://github.com/gusev-iliya/Vasya_voice-assistant')
+            if cmd.startswith(opts["google"]):
+                for x in opts['google']:
+                    cmd = cmd.replace(x, "").strip()
+                webbrowser.open('https://www.google.com/search?q=%s' %cmd)
             if cmd.startswith(opts["calc"]):
                 for x in opts['calc']:
                     cmd = cmd.replace(x, "").strip()
@@ -65,10 +76,6 @@ def callback(recognizer, audio):
                 if oper=='-':
                     result=int(a)-int(b)
                     print('ответ: ',str(result) )
-        # speak_engine.say('ответ: %s' %result )
-        # speak_engine.runAndWait()
-        # speak_engine.stop()
-        speak('привет')
     except sr.UnknownValueError:
         print("[log] Голос не распознан!")
     except sr.RequestError as e:
