@@ -61,15 +61,11 @@ def callback(recognizer, audio):
                 l=False
                 apps = open("apps.txt", "r")
                 for line in apps:
-                    print(cmd)
-                    print(line)
                     if l==True:
-                        os.openfile(str(line))
-                        print('tytytyt')
+                        os.startfile(str(line).strip())
                         l=False
-                    if line == cmd:
+                    if line.strip() == cmd.strip():
                         l=True
-                        print('ytyt')
                 apps.close()
             if cmd.startswith(opts["google"]):
                 for x in opts['google']:
