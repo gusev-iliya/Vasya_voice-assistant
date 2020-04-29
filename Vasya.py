@@ -3,24 +3,34 @@ import speech_recognition as sr
 import pyttsx3
 import os
 import webbrowser
+import datetime
 def speak(what):
     print( what )
     speak_engine.say( what )
     speak_engine.runAndWait()
     speak_engine.stop()
-
+monthes ={
+'01':'января',
+'02':'февраля',
+'03':'марта',
+'04':'апреля',
+'05':'мая',
+'06':'июня',
+'07':'июля',
+'08':'августа',
+'09':'сентября',
+'10':'октября',
+'11':'ноября',
+'12':'декабря'
+}
 opts = {
     "alias": ('вася','васечка','васюня','василий','василиса'),
     "tbr": ('скажи','расскажи','покажи','сколько','произнеси'),
     "calc": ('сколько будет','посчитай'),
     "open": ('открой','запусти','включи'),
-    "google": ('найди в гугле','найди в гугле что такое', 'поищи в гугле слово', 'забей в гугле что такое', 'забей в гугле','что такое'),
-    "cmds": {
-        "ctime": ('текущее время','сейчас времени','который час'),
-        "radio": ('включи музыку','воспроизведи радио','включи радио'),
-        "stupid1": ('расскажи анекдот','рассмеши меня','ты знаешь анекдоты'),
-
-    }
+    "google": ('загугли','найди в гугле','найди в гугле что такое', 'поищи в гугле слово', 'забей в гугле что такое', 'забей в гугле','что такое'),
+    "ctime": ('текущее время','сколько сейчас времени','сколько времени','который час'),
+    "stupid1": ('расскажи анекдот','рассмеши меня','ты знаешь анекдоты'),
 }
 def callback(recognizer, audio):
     try:
@@ -42,12 +52,25 @@ def callback(recognizer, audio):
                     webbrowser.open('https://www.youtube.com')
                 if cmd == 'этот проект на гитхабе':
                     webbrowser.open('https://github.com/gusev-iliya/Vasya_voice-assistant')
-                new1 = open("commands.txt", "r")
-                for line in new1:
+                sites = open("sites.txt", "r")
+                for line in sites:
                     cm, link = line.split(' ')
                     if cmd==cm:
                         webbrowser.open(link)
-                new1.close()
+                sites.close()
+                l=False
+                apps = open("apps.txt", "r")
+                for line in apps:
+                    print(cmd)
+                    print(line)
+                    if l==True:
+                        os.openfile(str(line))
+                        print('tytytyt')
+                        l=False
+                    if line == cmd:
+                        l=True
+                        print('ytyt')
+                apps.close()
             if cmd.startswith(opts["google"]):
                 for x in opts['google']:
                     cmd = cmd.replace(x, "").strip()
@@ -58,7 +81,15 @@ def callback(recognizer, audio):
                 print('ссылка')
                 link=input()
                 new = open("commands.txt", "a")
-                new.write('%s %s/n' %(cm, link))
+                new.write('%s %s\n' %(cm, link))
+                new.close()
+            if cmd == 'новое приложение':
+                print('команда')
+                c=input()
+                print('путь к приложению')
+                path=input()
+                new = open("apps.txt", "a")
+                new.write('%s\n%s\n' %(c, path))
                 new.close()
             if cmd.startswith(opts["calc"]):
                 for x in opts['calc']:
@@ -80,15 +111,26 @@ def callback(recognizer, audio):
                 if oper=='x':
                     result=int(a)*int(b)
                     print('ответ: ',str(result) )
+                    #speak(result)
                 if oper=='/':
                     result=int(a)/int(b)
                     print('ответ: ',str(result) )
+                    #speak(result)
                 if oper=='+':
                     result=int(a)+int(b)
                     print('ответ: ',str(result) )
+                    #speak(result)
                 if oper=='-':
                     result=int(a)-int(b)
                     print('ответ: ',str(result) )
+                    #speak(result)
+            if cmd.startswith(opts["ctime"]):
+                print('Сейчас ', datetime.datetime.today().strftime('%H:%M'))
+            if cmd == 'какое сегодня число' or cmd == 'какой сегодня день':
+                for key in monthes:
+                    if key==datetime.datetime.today().strftime('%m'):
+                        print('Сегодня ', datetime.datetime.today().strftime('%d'), monthes[key])
+
     except sr.UnknownValueError:
         print("[log] Голос не распознан!")
     except sr.RequestError as e:
@@ -110,4 +152,4 @@ speak("Добрый день, повелитель")
 speak("Вася слушает")
 
 stop_listening = r.listen_in_background(m, callback)
-while True: time.sleep(0.1)
+while True:time.sleep(0.001)
