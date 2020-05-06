@@ -156,6 +156,17 @@ def callback(recognizer, audio):
                 pag.click(x=int(x1), y=int(y1))
             elif cmd.startswith('нажми правой кнопкой мыши'):
                 pag.click(button='right')
+            if cmd.startswith('выдели до'):
+                cmd = cmd.replace('выдели до', '')
+                cmd = cmd.strip()
+                x1,x2,y1,y2 = cmd.split(' ')
+                pag.dragTo(int(x1),int(y1),0.5)
+            if cmd.startswith('вверх'):
+                cmd = cmd.replace('вверх', '')
+                pag.scroll(int(cmd))
+            if cmd.startswith('вниз'):
+                cmd = cmd.replace('вниз', '')
+                pag.scroll(-(int(cmd)))
     except sr.UnknownValueError:
         print("[log] Голос не распознан!")
     except sr.RequestError as e:
