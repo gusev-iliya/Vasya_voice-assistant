@@ -134,16 +134,28 @@ def callback(recognizer, audio):
                 if cmd.startswith(commands["cursor1"]):
                     for x in commands['cursor1']:
                         cmd = cmd.replace(x, "").strip()
-                    x1,y1 = cmd.split(' ')
-                    if y1 == 'вниз':
-                        pag.move(0, int(x1), 0.5)
-                    if y1 == 'вверх' or y1 == 'верх':
-                        pag.move(0, -(int(x1)), 0.5)
-                    if y1 == 'вправо' or y1 == 'направо':
-                        pag.move(int(x1),0, 0.5)
-                    if y1 == 'влево' or y1 == 'налево':
-                        pag.move(-(int(x1)),0, 0.5)
-                    #pag.moveTo(int(x1),int(y1), 0.5)
+                    s = cmd.split()
+                    if len(s)>2:
+                        x1,x2,y1,y2=cmd.split(' ')
+                        pag.moveTo(int(x1),int(y1), 0.5)
+                    else:
+                        x1,y1 = cmd.split(' ')
+                        if y1 == 'вниз':
+                            pag.move(0, int(x1), 0.5)
+                        elif y1 == 'вверх' or y1 == 'верх':
+                            pag.move(0, -(int(x1)), 0.5)
+                        elif y1 == 'вправо' or y1 == 'направо':
+                            pag.move(int(x1),0, 0.5)
+                        elif y1 == 'влево' or y1 == 'налево':
+                            pag.move(-(int(x1)),0, 0.5)
+            if cmd == 'нажми' or cmd == 'тыкни':
+                pag.click()
+            elif cmd.startswith('нажми на'):
+                cmd = cmd.replace('нажми на','').strip()
+                x1,x2,y1,y2 = cmd.split(' ')
+                pag.click(x=int(x1), y=int(y1))
+            elif cmd.startswith('нажми правой кнопкой мыши'):
+                pag.click(button='right')
     except sr.UnknownValueError:
         print("[log] Голос не распознан!")
     except sr.RequestError as e:
