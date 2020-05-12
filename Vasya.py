@@ -10,19 +10,12 @@ def speak(what):
     speak_engine.say( what )
     speak_engine.runAndWait()
     speak_engine.stop()
+
 monthes ={
-'01':'января',
-'02':'февраля',
-'03':'марта',
-'04':'апреля',
-'05':'мая',
-'06':'июня',
-'07':'июля',
-'08':'августа',
-'09':'сентября',
-'10':'октября',
-'11':'ноября',
-'12':'декабря'
+'01':'января','02':'февраля','03':'марта','04':'апреля','05':'мая','06':'июня','07':'июля','08':'августа','09':'сентября','10':'октября','11':'ноября','12':'декабря'
+}
+letters = {
+'q':'й','w':'ц','e':'у','r':'к','t':'е','y':'н','u':'г','i':'ш','o':'щ','p':'з','[':'х',']':'ъ','a':'ф','s':'ы','d':'в','f':'а','g':'п','h':'р','j':'о','k':'л','l':'д',';':'ж',"'":'э','z':'я','x':'ч','c':'с','v':'м','b':'и','n':'т','m':'ь',',':'б','.':'ю',' ':' '
 }
 commands = {
     "vasya": ('вася','васечка','васюня','василий','василиса'),
@@ -39,11 +32,12 @@ def callback(recognizer, audio):
     try:
         voice = recognizer.recognize_google(audio, language = "ru-RU").lower()
         print("[log] Распознано: " + voice)
+
         if voice.startswith(commands["vasya"]):
             cmd = voice
-
             for x in commands['vasya']:
                 cmd = cmd.replace(x, "").strip()
+
             if cmd.startswith(commands["open"]):
                 for x in commands['open']:
                     cmd = cmd.replace(x, "").strip()
@@ -51,7 +45,7 @@ def callback(recognizer, audio):
                     os.startfile("C:\\Users\\gusev\\OneDrive\\Рабочий стол\\Калькулятор")
                 if cmd == 'вконтакте' or cmd == 'вк':
                     webbrowser.open('https://vk.com/feed')
-                if cmd == 'ютуб' or cmd == 'ютубчик' or cmd == 'youtube':
+                if cmd == 'ютубчик' or cmd == 'youtube':
                     webbrowser.open('https://www.youtube.com')
                 if cmd == 'этот проект на гитхабе':
                     webbrowser.open('https://github.com/gusev-iliya/Vasya_voice-assistant')
@@ -110,15 +104,12 @@ def callback(recognizer, audio):
                 if oper=='x':
                     result=int(a)*int(b)
                     print('ответ: ',str(result) )
-                    #speak(result)
                 if oper=='/':
                     result=int(a)/int(b)
                     print('ответ: ',str(result) )
-                    #speak(result)
                 if oper=='+':
                     result=int(a)+int(b)
                     print('ответ: ',str(result) )
-                    #speak(result)
                 if oper=='-':
                     result=int(a)-int(b)
                     print('ответ: ',str(result) )
@@ -167,6 +158,18 @@ def callback(recognizer, audio):
             if cmd.startswith('вниз'):
                 cmd = cmd.replace('вниз', '')
                 pag.scroll(-(int(cmd)))
+            if cmd.startswith('напиши') or cmd.startswith('напечатай'):#только по английски
+                cmd = cmd.replace('напиши','')
+                cmd = cmd.replace('напечатай','')
+                st = ''
+                for x in cmd:
+                    for key in letters:
+                        if x == letters[key]:
+                            st+=key
+                pag.write(st, interval=0.1)
+            if cmd == 'поменяй язык':
+                pag.hotkey('shift','ctrl')
+
     except sr.UnknownValueError:
         print("[log] Голос не распознан!")
     except sr.RequestError as e:
@@ -177,12 +180,6 @@ m = sr.Microphone(device_index = 1)
 
 with m as source:
     r.adjust_for_ambient_noise(source)
-
-speak_engine = pyttsx3.init()
-
-voices = speak_engine.getProperty('voices')
-speak_engine.setProperty('voice', voices[0].id)
-
 
 speak("Добрый день, повелитель")
 speak("Вася слушает")
