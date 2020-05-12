@@ -25,7 +25,7 @@ commands = {
     "google": ('загугли','найди в гугле','найди в гугле что такое', 'поищи в гугле слово', 'забей в гугле что такое', 'забей в гугле','что такое'),
     "ctime": ('текущее время','сколько сейчас времени','сколько времени','который час'),
     "stupid1": ('расскажи анекдот','рассмеши меня','ты знаешь анекдоты'),
-    "cursor":('перемести', 'передвинь', 'переставь', 'перенеси'),
+    "cursor":('перемести', 'передвинь', 'переставь', 'перенести', 'перевести'),
     "cursor1":('курсор на' , 'мышь на', 'мышку на' )
 }
 def callback(recognizer, audio):
@@ -135,7 +135,7 @@ def callback(recognizer, audio):
                             pag.move(0, int(x1), 0.5)
                         elif y1 == 'вверх' or y1 == 'верх':
                             pag.move(0, -(int(x1)), 0.5)
-                        elif y1 == 'вправо' or y1 == 'направо':
+                        elif y1 == 'вправо' or y1 == 'вправа':
                             pag.move(int(x1),0, 0.5)
                         elif y1 == 'влево' or y1 == 'налево':
                             pag.move(-(int(x1)),0, 0.5)
@@ -158,7 +158,7 @@ def callback(recognizer, audio):
             if cmd.startswith('вниз'):
                 cmd = cmd.replace('вниз', '')
                 pag.scroll(-(int(cmd)))
-            if cmd.startswith('напиши') or cmd.startswith('напечатай'):#только по английски
+            if cmd.startswith('напиши') or cmd.startswith('напечатай'):
                 cmd = cmd.replace('напиши','')
                 cmd = cmd.replace('напечатай','')
                 st = ''
@@ -169,7 +169,12 @@ def callback(recognizer, audio):
                 pag.write(st, interval=0.1)
             if cmd == 'поменяй язык':
                 pag.hotkey('shift','ctrl')
-
+            if cmd == 'скопируй':
+                pag.hotkey('ctrl','V')
+            if cmd == 'вставь':
+                pag.hotkey('ctrl','C')
+            if cmd == 'позиция':
+                print(pag.position())
     except sr.UnknownValueError:
         print("[log] Голос не распознан!")
     except sr.RequestError as e:
@@ -181,7 +186,13 @@ m = sr.Microphone(device_index = 1)
 with m as source:
     r.adjust_for_ambient_noise(source)
 
+speak_engine = pyttsx3.init()
+
+voices = speak_engine.getProperty('voices')
+speak_engine.setProperty('voice', voices[0].id)
+
 speak("Добрый день, повелитель")
 speak("Вася слушает")
+
 stop_listening = r.listen_in_background(m, callback)
 while True:time.sleep(0.001)
